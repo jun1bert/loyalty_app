@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body {
+        font-family: 'Montserrat', sans-serif;
+        background-color: #F4F1EA;
+        color: #3f352e;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-family: 'Playfair Display', serif;
+        color: #3f352e;
+    }
+}
+
+@layer components {
+
+    /* Main brown button */
+    .btn-primary {
+        @apply px-5 py-2.5 rounded-lg font-medium transition duration-200;
+        background-color: #A48D78;
+        color: #FAF9F6;
+    }
+
+    .btn-primary:hover {
+        background-color: #8f7865;
+    }
+
+    /* Light secondary button */
+    .btn-secondary {
+        @apply px-5 py-2.5 rounded-lg font-medium border transition duration-200;
+        background-color: #FAF9F6;
+        border-color: #CBB9A4;
+        color: #5c4c40;
+    }
+
+    .btn-secondary:hover {
+        background-color: #E6DAC8;
+    }
+
+    /* Cards */
+    .theme-card {
+        @apply rounded-xl border shadow-sm;
+        background-color: #FAF9F6;
+        border-color: #E6DAC8;
+    }
+
+    /* Inputs */
+    .theme-input {
+        @apply w-full rounded-lg border px-3 py-2 outline-none transition;
+        background-color: #FAF9F6;
+        border-color: #CBB9A4;
+        color: #3f352e;
+    }
+
+    .theme-input:focus {
+        border-color: #A48D78;
+        --tw-ring-color: #A48D78;
+    }
+
+    /* Table headings */
+    .theme-table-header {
+        background-color: #E6DAC8;
+        color: #5c4c40;
+    }
+
+    /* Status badges */
+    .badge-active {
+        @apply inline-flex rounded-full px-3 py-1 text-xs font-semibold;
+        background-color: #E6DAC8;
+        color: #675646;
+    }
+
+    .badge-inactive {
+        @apply inline-flex rounded-full px-3 py-1 text-xs font-semibold;
+        background-color: #eee8e2;
+        color: #7a6d63;
+    }
+
+    /* Page title */
+    .page-title {
+        font-family: 'Playfair Display', serif;
+        @apply text-3xl font-medium;
+        color: #493b32;
+    }
+}
