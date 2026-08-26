@@ -1,4 +1,6 @@
-### Customer Login
+### =========================================================
+### CUSTOMER LOGIN
+### =========================================================
 
 POST http://127.0.0.1:8000/api/customer/login
 Content-Type: application/json
@@ -10,14 +12,46 @@ Accept: application/json
 }
 
 
-### Customer Membership
+### =========================================================
+### CUSTOMER MEMBERSHIP
+### Replace TOKEN-HERE with the newest token from login
+### =========================================================
 
 GET http://127.0.0.1:8000/api/customer/membership
 Accept: application/json
-Authorization: Bearer 2|0vO92beoTgGfJD9KPa9vqdtmce1Ecl1zesFBqjUxaf941312
+Authorization: Bearer TOKEN-HERE
 
-### Customer Membership
 
-GET http://127.0.0.1:8000/api/customer/membership
+### =========================================================
+### ACTIVATE NEW CUSTOMER
+### No Authorization token required
+### =========================================================
+
+POST http://127.0.0.1:8000/api/customer/activate
+Content-Type: application/json
 Accept: application/json
-Authorization: Bearer 3|ECbt83QIpYGItsDZT9SQkT6buXFE92MUoW8CjIUk72bd7274
+
+{
+    "membership_code": "MM-8OOUA8JN",
+    "phone": "09123456789",
+    "email": "customertwo@test.com",
+    "password": "password",
+    "password_confirmation": "password"
+}
+
+### Customer Login
+
+POST http://127.0.0.1:8000/api/customer/login
+Content-Type: application/json
+Accept: application/json
+
+{
+    "email": "customertwo@test.com",
+    "password": "password"
+}
+
+### Customer Transactions
+
+GET http://127.0.0.1:8000/api/customer/transactions
+Accept: application/json
+Authorization: Bearer 12|Gijl27mySiQzxcABYBsoDDFqNVi7Vq7twaXmimbX1f1e02c8

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use App\Models\LoyaltyTransaction;
 
 class CustomerAuthController extends Controller
 {
@@ -182,6 +183,75 @@ class CustomerAuthController extends Controller
                     $membership->loyaltyPlan?->discount_percentage,
             ],
         ],
+    ]);
+}
+
+public function transactions(Request $request)
+{
+    $user = $request->user();
+
+    if ($user->role !== 'customer') {
+        return response()->json([
+            'message' => 'Unauthorized.',
+        ], 403);
+    }
+
+    $customer = $user->customer;
+
+    if (!$customer) {
+        return response()->json([
+            'message' => 'Customer profile not found.',
+        ], 404);
+    }
+
+    $transactions = LoyaltyTransaction::with([
+        'items'
+    ])
+        ->where('customer_id', $customer->id)
+        ->latest('transaction_date')
+        ->get();
+
+    return response()->json([
+        'transactions' => $transactions->map(function ($transaction) {
+
+            return [
+                'id' => $transaction->id,
+
+                'transaction_date' =>
+                    $transaction->transaction_date?->toISOString(),
+
+                'subtotal' =>
+                    $transaction->subtotal,
+
+                'discount_percentage' =>
+                    $transaction->discount_percentage,
+
+                'discount_amount' =>
+                    $transaction->discount_amount,
+
+                'total_amount' =>
+                    $transaction->total_amount,
+
+                'items' => $transaction->items->map(function ($item) {
+                    return [
+                        'service_name' =>
+                            $item->service_name,
+
+                        'original_price' =>
+                            $item->original_price,
+
+                        'discount_eligible' =>
+                            $item->discount_eligible,
+
+                        'discount_amount' =>
+                            $item->discount_amount,
+
+                        'final_price' =>
+                            $item->final_price,
+                    ];
+                }),
+            ];
+        }),
     ]);
 }
 }
