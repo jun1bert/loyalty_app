@@ -58,6 +58,8 @@ class LoyaltyScanController extends Controller
             'membership_id' => 'required|exists:loyalty_memberships,id',
             'services' => 'required|array|min:1',
             'services.*' => 'exists:services,id',
+            'custom_prices' => 'nullable|array',
+            'custom_prices.*' => 'nullable|numeric|min:0',
         ]);
 
         $membership = LoyaltyMembership::with([
@@ -84,11 +86,30 @@ class LoyaltyScanController extends Controller
             ->where('is_active', true)
             ->get();
 
-        $subtotal = $services->sum('price');
+        if ($services->isEmpty()) {
+            return redirect()
+                ->route('scanner.index')
+                ->with('error', 'No valid services were selected.');
+        }
+
+        $customPrices = $validated['custom_prices'] ?? [];
+        $servicePrices = $this->resolveServicePrices($services, $customPrices);
+
+        if ($servicePrices === null) {
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'custom_prices' => 'Please enter the actual price for each variable-price service.',
+                ]);
+        }
+
+        $subtotal = $services->sum(
+            fn (Service $service) => $servicePrices[$service->id]
+        );
 
         $eligibleSubtotal = $services
             ->where('discount_eligible', true)
-            ->sum('price');
+            ->sum(fn (Service $service) => $servicePrices[$service->id]);
 
         $discountPercentage = $membership
             ->loyaltyPlan
@@ -109,6 +130,7 @@ class LoyaltyScanController extends Controller
         return view('scanner.checkout', compact(
             'membership',
             'services',
+            'servicePrices',
             'subtotal',
             'eligibleSubtotal',
             'discountPercentage',
@@ -125,6 +147,8 @@ class LoyaltyScanController extends Controller
         'membership_id' => 'required|exists:loyalty_memberships,id',
         'services' => 'required|array|min:1',
         'services.*' => 'exists:services,id',
+        'custom_prices' => 'nullable|array',
+        'custom_prices.*' => 'nullable|numeric|min:0',
     ]);
 
     $membership = LoyaltyMembership::with([
@@ -157,11 +181,22 @@ class LoyaltyScanController extends Controller
             ->with('error', 'No valid services were selected.');
     }
 
-    $subtotal = $services->sum('price');
+    $customPrices = $validated['custom_prices'] ?? [];
+    $servicePrices = $this->resolveServicePrices($services, $customPrices);
+
+    if ($servicePrices === null) {
+        return redirect()
+            ->route('scanner.index')
+            ->with('error', 'A variable-price service was missing its actual price. Please scan again.');
+    }
+
+    $subtotal = $services->sum(
+        fn (Service $service) => $servicePrices[$service->id]
+    );
 
     $eligibleSubtotal = $services
         ->where('discount_eligible', true)
-        ->sum('price');
+        ->sum(fn (Service $service) => $servicePrices[$service->id]);
 
     $discountPercentage = $membership
         ->loyaltyPlan
@@ -182,6 +217,7 @@ class LoyaltyScanController extends Controller
     $transaction = DB::transaction(function () use (
         $membership,
         $services,
+        $servicePrices,
         $subtotal,
         $eligibleSubtotal,
         $discountPercentage,
@@ -205,20 +241,21 @@ class LoyaltyScanController extends Controller
         foreach ($services as $service) {
 
             $itemDiscount = 0;
+            $servicePrice = $servicePrices[$service->id];
 
             if ($service->discount_eligible && $meetsMinimumSpend) {
                 $itemDiscount =
-                    $service->price * ($discountPercentage / 100);
+                    $servicePrice * ($discountPercentage / 100);
             }
 
             LoyaltyTransactionItem::create([
                 'loyalty_transaction_id' => $transaction->id,
                 'service_id' => $service->id,
                 'service_name' => $service->name,
-                'original_price' => $service->price,
+                'original_price' => $servicePrice,
                 'discount_eligible' => $service->discount_eligible,
                 'discount_amount' => $itemDiscount,
-                'final_price' => $service->price - $itemDiscount,
+                'final_price' => $servicePrice - $itemDiscount,
             ]);
         }
 
@@ -232,4 +269,26 @@ class LoyaltyScanController extends Controller
             'Transaction completed successfully. Transaction #' . $transaction->id
         );
 }
+
+    private function resolveServicePrices($services, array $customPrices): ?array
+    {
+        $prices = [];
+
+        foreach ($services as $service) {
+            if ((float) $service->price > 0) {
+                $prices[$service->id] = (float) $service->price;
+                continue;
+            }
+
+            $customPrice = $customPrices[$service->id] ?? null;
+
+            if ($customPrice === null || $customPrice === '') {
+                return null;
+            }
+
+            $prices[$service->id] = (float) $customPrice;
+        }
+
+        return $prices;
+    }
 }

@@ -97,3 +97,35 @@ test('scanner applies discount when eligible subtotal reaches minimum spend', fu
         ->and($transaction->total_amount)->toBe('450.00')
         ->and($transaction->items()->first()->discount_amount)->toBe('50.00');
 });
+
+test('scanner uses entered amount for variable price services', function () {
+    $user = staffUser();
+    [, , $membership] = activeMembershipWithMinimumSpend(500);
+
+    $service = Service::create([
+        'name' => 'Custom Service',
+        'price' => 0,
+        'discount_eligible' => true,
+        'is_active' => true,
+    ]);
+
+    $this->actingAs($user)
+        ->post(route('scanner.confirm'), [
+            'membership_id' => $membership->id,
+            'services' => [$service->id],
+            'custom_prices' => [
+                $service->id => 800,
+            ],
+        ])
+        ->assertRedirect(route('scanner.index'));
+
+    $transaction = \App\Models\LoyaltyTransaction::first();
+    $item = $transaction->items()->first();
+
+    expect($transaction->subtotal)->toBe('800.00')
+        ->and($transaction->eligible_subtotal)->toBe('800.00')
+        ->and($transaction->discount_amount)->toBe('80.00')
+        ->and($transaction->total_amount)->toBe('720.00')
+        ->and($item->original_price)->toBe('800.00')
+        ->and($item->final_price)->toBe('720.00');
+});

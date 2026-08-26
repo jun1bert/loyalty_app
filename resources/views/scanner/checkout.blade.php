@@ -50,6 +50,14 @@
                 name="services[]"
                 value="{{ $service->id }}"
             >
+
+            @if((float) $service->price <= 0)
+                <input
+                    type="hidden"
+                    name="custom_prices[{{ $service->id }}]"
+                    value="{{ number_format($servicePrices[$service->id], 2, '.', '') }}"
+                >
+            @endif
         @endforeach
 
         <div class="flex flex-col sm:flex-row gap-3">
