@@ -15,6 +15,28 @@
     </x-slot>
 
 
+    <form method="GET" action="{{ route('memberships.index') }}" class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <input
+            type="search"
+            name="search"
+            value="{{ $search }}"
+            placeholder="Search memberships, customers, phone, plan, or status"
+            class="theme-input sm:max-w-md"
+        >
+
+        <div class="flex gap-2">
+            <button type="submit" class="btn-primary">
+                Search
+            </button>
+
+            @if($search !== '')
+                <a href="{{ route('memberships.index') }}" class="btn-secondary">
+                    Clear
+                </a>
+            @endif
+        </div>
+    </form>
+
     <div class="theme-card overflow-hidden">
 
         <div class="overflow-x-auto">
@@ -192,7 +214,7 @@
                                 colspan="8"
                                 class="px-6 py-12 text-center text-[#8B796A]">
 
-                                No memberships found.
+                                {{ $search !== '' ? 'No memberships match your search.' : 'No memberships found.' }}
 
                             </td>
 

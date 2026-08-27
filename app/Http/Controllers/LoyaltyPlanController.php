@@ -7,11 +7,18 @@ use Illuminate\Http\Request;
 
 class LoyaltyPlanController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $plans = LoyaltyPlan::latest()->get();
+        $search = trim((string) $request->query('search', ''));
 
-        return view('loyalty-plans.index', compact('plans'));
+        $plans = LoyaltyPlan::query()
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where('name', 'like', "%{$search}%");
+            })
+            ->latest()
+            ->get();
+
+        return view('loyalty-plans.index', compact('plans', 'search'));
     }
 
     public function create()

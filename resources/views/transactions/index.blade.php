@@ -12,6 +12,28 @@
         </div>
     </x-slot>
 
+    <form method="GET" action="{{ route('transactions.index') }}" class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <input
+            type="search"
+            name="search"
+            value="{{ $search }}"
+            placeholder="Search transaction ID, customer, membership, or staff"
+            class="theme-input sm:max-w-md"
+        >
+
+        <div class="flex gap-2">
+            <button type="submit" class="btn-primary">
+                Search
+            </button>
+
+            @if($search !== '')
+                <a href="{{ route('transactions.index') }}" class="btn-secondary">
+                    Clear
+                </a>
+            @endif
+        </div>
+    </form>
+
     <div class="theme-card overflow-hidden">
 
         <div class="overflow-x-auto">
@@ -120,7 +142,7 @@
                         <tr>
                             <td colspan="8"
                                 class="px-6 py-12 text-center text-[#8B796A]">
-                                No loyalty transactions yet.
+                                {{ $search !== '' ? 'No transactions match your search.' : 'No loyalty transactions yet.' }}
                             </td>
                         </tr>
 

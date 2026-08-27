@@ -26,6 +26,28 @@
         </div>
     @endif
 
+    <form method="GET" action="{{ route('services.index') }}" class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <input
+            type="search"
+            name="search"
+            value="{{ $search }}"
+            placeholder="Search services"
+            class="theme-input sm:max-w-sm"
+        >
+
+        <div class="flex gap-2">
+            <button type="submit" class="btn-primary">
+                Search
+            </button>
+
+            @if($search !== '')
+                <a href="{{ route('services.index') }}" class="btn-secondary">
+                    Clear
+                </a>
+            @endif
+        </div>
+    </form>
+
     <div class="theme-card overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
@@ -96,7 +118,7 @@
                     @empty
                         <tr>
                             <td colspan="5" class="px-6 py-12 text-center text-[#8B796A]">
-                                No services have been created yet.
+                                {{ $search !== '' ? 'No services match your search.' : 'No services have been created yet.' }}
                             </td>
                         </tr>
                     @endforelse

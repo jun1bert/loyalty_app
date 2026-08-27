@@ -169,7 +169,7 @@
 
                     <p class="text-sm text-[#6F5E51] mt-2 leading-6">
                         The customer's loyalty membership will be activated immediately.
-                        Laravel will automatically generate a unique membership code,
+                        The system will automatically generate a unique membership code,
                         QR token, activation date, and expiration date based on the
                         selected loyalty plan.
                     </p>

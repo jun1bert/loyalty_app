@@ -7,11 +7,18 @@ use Illuminate\Http\Request;
 
 class ServiceController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $services = Service::latest()->get();
+        $search = trim((string) $request->query('search', ''));
 
-        return view('services.index', compact('services'));
+        $services = Service::query()
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where('name', 'like', "%{$search}%");
+            })
+            ->latest()
+            ->get();
+
+        return view('services.index', compact('services', 'search'));
     }
 
     public function create()

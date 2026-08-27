@@ -43,7 +43,7 @@
                         Martinis & Manicures
                     </p>
 
-                    <h2 class="font-serif text-3xl mt-5">
+                    <h2 class="font-serif text-3xl mt-5 text-[#FAF9F6]">
                         Loyalty Card
                     </h2>
 

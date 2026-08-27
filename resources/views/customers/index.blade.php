@@ -33,6 +33,28 @@
         </div>
     @endif
 
+    <form method="GET" action="{{ route('customers.index') }}" class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <input
+            type="search"
+            name="search"
+            value="{{ $search }}"
+            placeholder="Search customers, phone, membership, or plan"
+            class="theme-input sm:max-w-md"
+        >
+
+        <div class="flex gap-2">
+            <button type="submit" class="btn-primary">
+                Search
+            </button>
+
+            @if($search !== '')
+                <a href="{{ route('customers.index') }}" class="btn-secondary">
+                    Clear
+                </a>
+            @endif
+        </div>
+    </form>
+
     <div class="theme-card overflow-hidden">
 
         <div class="overflow-x-auto">
@@ -192,7 +214,7 @@
                         <tr>
                             <td colspan="6"
                                 class="px-6 py-12 text-center text-[#8B796A]">
-                                No customers have been registered yet.
+                                {{ $search !== '' ? 'No customers match your search.' : 'No customers have been registered yet.' }}
                             </td>
                         </tr>
 

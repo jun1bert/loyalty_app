@@ -11,13 +11,30 @@ use Illuminate\Support\Facades\DB;
 
 class CustomerController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $customers = Customer::with([
-            'loyaltyMembership.loyaltyPlan'
-        ])->latest()->get();
+        $search = trim((string) $request->query('search', ''));
 
-        return view('customers.index', compact('customers'));
+        $customers = Customer::with([
+            'loyaltyMembership.loyaltyPlan',
+        ])
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%")
+                        ->orWhere('phone', 'like', "%{$search}%")
+                        ->orWhereHas('loyaltyMembership', function ($query) use ($search) {
+                            $query->where('membership_code', 'like', "%{$search}%");
+                        })
+                        ->orWhereHas('loyaltyMembership.loyaltyPlan', function ($query) use ($search) {
+                            $query->where('name', 'like', "%{$search}%");
+                        });
+                });
+            })
+            ->latest()
+            ->get();
+
+        return view('customers.index', compact('customers', 'search'));
     }
 
     public function create()

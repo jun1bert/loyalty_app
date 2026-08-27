@@ -37,6 +37,27 @@
 
     @endif
 
+    <form method="GET" action="{{ route('loyalty-plans.index') }}" class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <input
+            type="search"
+            name="search"
+            value="{{ $search }}"
+            placeholder="Search loyalty plans"
+            class="theme-input sm:max-w-sm"
+        >
+
+        <div class="flex gap-2">
+            <button type="submit" class="btn-primary">
+                Search
+            </button>
+
+            @if($search !== '')
+                <a href="{{ route('loyalty-plans.index') }}" class="btn-secondary">
+                    Clear
+                </a>
+            @endif
+        </div>
+    </form>
 
     <div class="theme-card overflow-hidden">
 
@@ -192,7 +213,7 @@
                             <td colspan="7"
                                 class="px-6 py-12 text-center text-[#8B796A]">
 
-                                No loyalty plans have been created yet.
+                                {{ $search !== '' ? 'No loyalty plans match your search.' : 'No loyalty plans have been created yet.' }}
 
                             </td>
 

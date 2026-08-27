@@ -7,7 +7,10 @@
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Martinis & Manicures') }}</title>
+    <title>{{ config('app.name', 'Martinis & Manicures Loyalty') }}</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/martinis-icon.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/martinis-icon.png') }}">
+    <meta name="theme-color" content="#A48D78">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -94,8 +97,7 @@
             @endphp
 
             <nav
-                class="flex-1 overflow-y-auto
-                       px-5 py-3 space-y-2"
+                class="flex-1 overflow-y-auto overflow-x-hidden px-5 py-3 space-y-2 [scrollbar-width:thin] [scrollbar-color:rgba(164,141,120,.45)_transparent]"
             >
 
 
@@ -548,9 +550,14 @@
                            rounded-lg
                            text-[#493B32]
                            hover:bg-[#E6DAC8]"
+                    aria-label="Open sidebar"
                 >
 
-                    ☰
+                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                        <path d="M4 7h16"/>
+                        <path d="M4 12h16"/>
+                        <path d="M4 17h16"/>
+                    </svg>
 
                 </button>
 
