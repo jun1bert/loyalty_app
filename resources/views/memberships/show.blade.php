@@ -323,7 +323,7 @@
                     </p>
 
                     <p class="font-medium text-[#493B32] mt-1">
-                        {{ $membership->customer->email ?? '—' }}
+                        {{ $membership->customer->user?->email ?? 'No app account yet' }}
                     </p>
 
                 </div>

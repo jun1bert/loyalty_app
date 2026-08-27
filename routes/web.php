@@ -8,6 +8,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\LoyaltyScanController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\MembershipController;
+use App\Http\Controllers\LoyaltyTransactionController;
 
 
 Route::get('/', function () {
@@ -101,28 +102,5 @@ Route::get('/memberships/{membership}', [MembershipController::class, 'show'])
     });
 
 });
-
-Route::resource('customers', CustomerController::class);
-
-
-Route::get('/scanner', [LoyaltyScanController::class, 'index'])
-    ->name('scanner.index');
-
-Route::post('/scanner/verify', [LoyaltyScanController::class, 'verify'])
-    ->name('scanner.verify');
-
-Route::post('/scanner/calculate', [LoyaltyScanController::class, 'calculate'])
-    ->name('scanner.calculate');
-
-Route::post('/scanner/confirm', [LoyaltyScanController::class, 'confirm'])
-    ->name('scanner.confirm');
-
-use App\Http\Controllers\LoyaltyTransactionController;
-
-Route::get('/transactions', [LoyaltyTransactionController::class, 'index'])
-    ->name('transactions.index');
-
-Route::get('/transactions/{transaction}', [LoyaltyTransactionController::class, 'show'])
-    ->name('transactions.show');
 
 require __DIR__.'/auth.php';

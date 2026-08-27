@@ -25,6 +25,7 @@ class LoyaltyPlanController extends Controller
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
             'discount_percentage' => 'required|numeric|min:0|max:100',
+            'minimum_spend' => 'required|numeric|min:0',
             'validity_months' => 'required|integer|min:1|max:120',
         ]);
 
@@ -32,6 +33,7 @@ class LoyaltyPlanController extends Controller
             'name' => $validated['name'],
             'price' => $validated['price'],
             'discount_percentage' => $validated['discount_percentage'],
+            'minimum_spend' => $validated['minimum_spend'],
             'validity_months' => $validated['validity_months'],
             'is_active' => $request->boolean('is_active'),
         ]);
@@ -57,6 +59,7 @@ class LoyaltyPlanController extends Controller
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
             'discount_percentage' => 'required|numeric|min:0|max:100',
+            'minimum_spend' => 'required|numeric|min:0',
             'validity_months' => 'required|integer|min:1|max:120',
         ]);
 
@@ -64,6 +67,7 @@ class LoyaltyPlanController extends Controller
             'name' => $validated['name'],
             'price' => $validated['price'],
             'discount_percentage' => $validated['discount_percentage'],
+            'minimum_spend' => $validated['minimum_spend'],
             'validity_months' => $validated['validity_months'],
             'is_active' => $request->boolean('is_active'),
         ]);

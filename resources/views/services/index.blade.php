@@ -1,60 +1,80 @@
 <x-app-layout>
+
     <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800">
-                Services
-            </h2>
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+                <p class="text-xs uppercase tracking-[0.2em] text-[#A48D78] mb-1">
+                    Service Management
+                </p>
+
+                <h1 class="page-title">
+                    Services
+                </h1>
+            </div>
 
             <a href="{{ route('services.create') }}"
-               class="bg-blue-600 text-white px-4 py-2 rounded">
-                Add Service
+               class="btn-primary inline-flex items-center justify-center">
+                + Add Service
             </a>
         </div>
     </x-slot>
 
-    <div class="py-6">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    @if(session('success'))
+        <div class="mb-5 rounded-lg border border-[#E6DAC8]
+                    bg-[#FAF9F6] px-4 py-3 text-sm text-[#5C4C40]">
+            {{ session('success') }}
+        </div>
+    @endif
 
-            @if(session('success'))
-                <div class="mb-4 bg-green-100 text-green-800 p-3 rounded">
-                    {{ session('success') }}
-                </div>
-            @endif
+    <div class="theme-card overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="theme-table-header">
+                    <tr>
+                        <th class="px-6 py-4 text-left font-semibold">Service</th>
+                        <th class="px-6 py-4 text-left font-semibold">Price</th>
+                        <th class="px-6 py-4 text-left font-semibold">Discount</th>
+                        <th class="px-6 py-4 text-left font-semibold">Status</th>
+                        <th class="px-6 py-4 text-right font-semibold">Actions</th>
+                    </tr>
+                </thead>
 
-            <div class="bg-white shadow rounded-lg overflow-hidden">
-                <table class="w-full">
-                    <thead class="bg-gray-100">
-                        <tr>
-                            <th class="p-3 text-left">Service</th>
-                            <th class="p-3 text-left">Price</th>
-                            <th class="p-3 text-left">Discount</th>
-                            <th class="p-3 text-left">Status</th>
-                            <th class="p-3 text-left">Actions</th>
-                        </tr>
-                    </thead>
+                <tbody>
+                    @forelse($services as $service)
+                        <tr class="border-t border-[#E6DAC8] hover:bg-[#F4F1EA]/60 transition">
+                            <td class="px-6 py-4 font-medium text-[#493B32]">
+                                {{ $service->name }}
+                            </td>
 
-                    <tbody>
-                        @forelse($services as $service)
-                            <tr class="border-t">
-                                <td class="p-3">
-                                    {{ $service->name }}
-                                </td>
+                            <td class="px-6 py-4 text-[#5C4C40]">
+                                PHP {{ number_format($service->price, 2) }}
+                            </td>
 
-                                <td class="p-3">
-                                    ₱{{ number_format($service->price, 2) }}
-                                </td>
+                            <td class="px-6 py-4">
+                                @if($service->discount_eligible)
+                                    <span class="badge-active">Eligible</span>
+                                @else
+                                    <span class="badge-inactive">Not Eligible</span>
+                                @endif
+                            </td>
 
-                                <td class="p-3">
-                                    {{ $service->discount_eligible ? 'Eligible' : 'Not Eligible' }}
-                                </td>
+                            <td class="px-6 py-4">
+                                @if($service->is_active)
+                                    <span class="badge-active">Active</span>
+                                @else
+                                    <span class="badge-inactive">Inactive</span>
+                                @endif
+                            </td>
 
-                                <td class="p-3">
-                                    {{ $service->is_active ? 'Active' : 'Inactive' }}
-                                </td>
+                            <td class="px-6 py-4">
+                                <div class="flex justify-end items-center gap-4">
+                                    <a href="{{ route('services.show', $service) }}"
+                                       class="text-[#A48D78] hover:text-[#7C6757] font-medium">
+                                        View
+                                    </a>
 
-                                <td class="p-3 flex gap-2">
                                     <a href="{{ route('services.edit', $service) }}"
-                                       class="text-blue-600">
+                                       class="text-[#A48D78] hover:text-[#7C6757] font-medium">
                                         Edit
                                     </a>
 
@@ -63,25 +83,26 @@
                                         @csrf
                                         @method('DELETE')
 
-                                        <button type="submit"
-                                                class="text-red-600"
-                                                onclick="return confirm('Delete this service?')">
+                                        <button
+                                            type="submit"
+                                            class="text-red-500 hover:text-red-700 font-medium"
+                                            onclick="return confirm('Delete this service?')">
                                             Delete
                                         </button>
                                     </form>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" class="p-5 text-center text-gray-500">
-                                    No services yet.
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="px-6 py-12 text-center text-[#8B796A]">
+                                No services have been created yet.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
+
 </x-app-layout>

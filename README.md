@@ -7,6 +7,35 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## External Services Database Sync
+
+The loyalty app can import its service list from another database, such as the appointment system database, while keeping loyalty-specific settings locally.
+
+Add these values to `.env`:
+
+```env
+SERVICES_DB_CONNECTION=mysql
+SERVICES_DB_HOST=127.0.0.1
+SERVICES_DB_PORT=3306
+SERVICES_DB_DATABASE=appointment_database_name
+SERVICES_DB_USERNAME=root
+SERVICES_DB_PASSWORD=
+SERVICES_DB_TABLE=services
+SERVICES_DB_NAME_COLUMN=name
+SERVICES_DB_PRICE_COLUMN=price
+SERVICES_DB_ACTIVE_COLUMN=is_active
+```
+
+Then run:
+
+```bash
+php artisan optimize:clear
+php artisan services:sync-external --dry-run
+php artisan services:sync-external
+```
+
+The sync updates local service names/prices/status by service name. New services are marked loyalty-discount eligible by default; existing `discount_eligible` choices are preserved.
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:

@@ -13,11 +13,11 @@
 </head>
 
 
-<body class="antialiased">
+<body class="antialiased overflow-x-hidden">
 
 <div
     x-data="{ sidebarOpen: false }"
-    class="min-h-screen bg-[#F4F1EA]"
+    class="min-h-screen"
 >
 
     {{-- ========================================================= --}}
@@ -39,11 +39,11 @@
 
     <aside
         :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
-        class="fixed inset-y-0 left-0 z-50
+        class="sidebar fixed inset-y-0 left-0 z-50
                w-64
-               bg-[#FAF9F6]
-               border-r border-[#E6DAC8]
+               border-r border-[var(--desert-rock)]/25
                transition-transform duration-300
+               shadow-2xl
                lg:translate-x-0"
     >
 
@@ -55,64 +55,19 @@
             {{-- ================================================= --}}
 
             <div
-                class="h-24 flex items-center justify-center
-                       border-b border-[#E6DAC8]
-                       px-6"
+                class="p-5"
             >
 
-                @if(Auth::user()->isStaff())
-
-                    <a
-                        href="{{ route('scanner.index') }}"
-                        class="text-center"
+                <a
+                    href="{{ Auth::user()->isStaff() ? route('scanner.index') : route('dashboard') }}"
+                    class="flex min-h-20 items-center justify-center rounded-2xl border border-[var(--desert-rock)]/15 bg-[var(--feather-white)]/70 px-3 py-3 text-center shadow-sm"
+                >
+                    <img
+                        src="{{ asset('images/martinis-logo.png') }}"
+                        alt="Martinis and Manicures"
+                        class="h-auto max-h-16 w-full max-w-[11rem] object-contain sm:max-h-20"
                     >
-
-                        <div
-                            class="font-serif text-xl
-                                   tracking-[0.15em]
-                                   text-[#493B32]"
-                        >
-                            MARTINIS
-                        </div>
-
-                        <div
-                            class="text-[10px]
-                                   tracking-[0.35em]
-                                   text-[#A48D78]
-                                   mt-1"
-                        >
-                            & MANICURES
-                        </div>
-
-                    </a>
-
-                @else
-
-                    <a
-                        href="{{ route('dashboard') }}"
-                        class="text-center"
-                    >
-
-                        <div
-                            class="font-serif text-xl
-                                   tracking-[0.15em]
-                                   text-[#493B32]"
-                        >
-                            MARTINIS
-                        </div>
-
-                        <div
-                            class="text-[10px]
-                                   tracking-[0.35em]
-                                   text-[#A48D78]
-                                   mt-1"
-                        >
-                            & MANICURES
-                        </div>
-
-                    </a>
-
-                @endif
+                </a>
 
             </div>
 
@@ -121,9 +76,26 @@
             {{-- NAVIGATION --}}
             {{-- ================================================= --}}
 
+            @php
+                $sidebarIcon = function (string $name): string {
+                    $icons = [
+                        'dashboard' => '<path d="M3 13h8V3H3v10Z"/><path d="M13 21h8V11h-8v10Z"/><path d="M3 21h8v-6H3v6Z"/><path d="M13 3v6h8V3h-8Z"/>',
+                        'services' => '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.5-3.5a6 6 0 0 1-7.9 7.9l-6.6 6.6a2.1 2.1 0 0 1-3-3l6.6-6.6a6 6 0 0 1 7.9-7.9l-3.5 3.5Z"/>',
+                        'plans' => '<path d="M20 12v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7H7.5A2.5 2.5 0 1 1 12 5.5V7Z"/><path d="M12 7h4.5A2.5 2.5 0 1 0 12 5.5V7Z"/>',
+                        'customers' => '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+                        'memberships' => '<rect width="20" height="14" x="2" y="5" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/><path d="M14 15h2"/>',
+                        'transactions' => '<path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1Z"/><path d="M8 7h8"/><path d="M8 12h8"/><path d="M8 17h5"/>',
+                        'scanner' => '<path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 7h3v3H7z"/><path d="M14 7h3v3h-3z"/><path d="M7 14h3v3H7z"/><path d="M14 14h1"/><path d="M17 14h1"/><path d="M14 17h4"/>',
+                        'users' => '<path d="M18 21a6 6 0 0 0-12 0"/><circle cx="12" cy="11" r="4"/><path d="M19 8v6"/><path d="M22 11h-6"/>',
+                    ];
+
+                    return '<svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' . $icons[$name] . '</svg>';
+                };
+            @endphp
+
             <nav
                 class="flex-1 overflow-y-auto
-                       px-4 py-6 space-y-2"
+                       px-5 py-3 space-y-2"
             >
 
 
@@ -141,15 +113,15 @@
                         class="flex items-center gap-3
                                rounded-lg
                                px-4 py-3
-                               text-sm font-medium
-                               transition
+                                   text-sm font-semibold
+                                   transition
 
                         {{ request()->routeIs('dashboard')
-                            ? 'bg-[#A48D78] text-white'
-                            : 'text-[#5C4C40] hover:bg-[#E6DAC8]' }}"
+                            ? 'border border-[var(--desert-rock)] bg-[var(--desert-rock)] text-[var(--feather-white)] shadow-lg shadow-[#a48d78]/25'
+                            : 'border border-transparent text-[var(--ink)] hover:border-[var(--desert-rock)]/20 hover:bg-[var(--feather-white)]/65 hover:text-[var(--desert-rock)]' }}"
                     >
 
-                        <span>⌂</span>
+                        {!! $sidebarIcon('dashboard') !!}
 
                         <span>
                             Dashboard
@@ -168,7 +140,7 @@
                             class="text-[10px]
                                    uppercase
                                    tracking-[0.2em]
-                                   text-[#A48D78]"
+                                   text-[var(--muted)]"
                         >
                             Management
                         </p>
@@ -185,15 +157,15 @@
                         class="flex items-center gap-3
                                rounded-lg
                                px-4 py-3
-                               text-sm font-medium
+                               text-sm font-semibold
                                transition
 
                         {{ request()->routeIs('services.*')
-                            ? 'bg-[#A48D78] text-white'
-                            : 'text-[#5C4C40] hover:bg-[#E6DAC8]' }}"
+                            ? 'border border-[var(--desert-rock)] bg-[var(--desert-rock)] text-[var(--feather-white)] shadow-lg shadow-[#a48d78]/25'
+                            : 'border border-transparent text-[var(--ink)] hover:border-[var(--desert-rock)]/20 hover:bg-[var(--feather-white)]/65 hover:text-[var(--desert-rock)]' }}"
                     >
 
-                        <span>◇</span>
+                        {!! $sidebarIcon('services') !!}
 
                         <span>
                             Services
@@ -211,15 +183,15 @@
                         class="flex items-center gap-3
                                rounded-lg
                                px-4 py-3
-                               text-sm font-medium
+                               text-sm font-semibold
                                transition
 
                         {{ request()->routeIs('loyalty-plans.*')
-                            ? 'bg-[#A48D78] text-white'
-                            : 'text-[#5C4C40] hover:bg-[#E6DAC8]' }}"
+                            ? 'border border-[var(--desert-rock)] bg-[var(--desert-rock)] text-[var(--feather-white)] shadow-lg shadow-[#a48d78]/25'
+                            : 'border border-transparent text-[var(--ink)] hover:border-[var(--desert-rock)]/20 hover:bg-[var(--feather-white)]/65 hover:text-[var(--desert-rock)]' }}"
                     >
 
-                        <span>♡</span>
+                        {!! $sidebarIcon('plans') !!}
 
                         <span>
                             Loyalty Plans
@@ -237,15 +209,15 @@
                         class="flex items-center gap-3
                                rounded-lg
                                px-4 py-3
-                               text-sm font-medium
+                               text-sm font-semibold
                                transition
 
                         {{ request()->routeIs('customers.*')
-                            ? 'bg-[#A48D78] text-white'
-                            : 'text-[#5C4C40] hover:bg-[#E6DAC8]' }}"
+                            ? 'border border-[var(--desert-rock)] bg-[var(--desert-rock)] text-[var(--feather-white)] shadow-lg shadow-[#a48d78]/25'
+                            : 'border border-transparent text-[var(--ink)] hover:border-[var(--desert-rock)]/20 hover:bg-[var(--feather-white)]/65 hover:text-[var(--desert-rock)]' }}"
                     >
 
-                        <span>♙</span>
+                        {!! $sidebarIcon('customers') !!}
 
                         <span>
                             Customers
@@ -258,14 +230,14 @@
     href="{{ route('memberships.index') }}"
     class="flex items-center gap-3
            rounded-lg px-4 py-3
-           text-sm font-medium transition
+           text-sm font-semibold transition
 
     {{ request()->routeIs('memberships.*')
-        ? 'bg-[#A48D78] text-white'
-        : 'text-[#5C4C40] hover:bg-[#E6DAC8]' }}"
+        ? 'border border-[var(--desert-rock)] bg-[var(--desert-rock)] text-[var(--feather-white)] shadow-lg shadow-[#a48d78]/25'
+        : 'border border-transparent text-[var(--ink)] hover:border-[var(--desert-rock)]/20 hover:bg-[var(--feather-white)]/65 hover:text-[var(--desert-rock)]' }}"
 >
 
-    <span>▣</span>
+    {!! $sidebarIcon('memberships') !!}
 
     <span>
         Memberships
@@ -283,15 +255,15 @@
                         class="flex items-center gap-3
                                rounded-lg
                                px-4 py-3
-                               text-sm font-medium
+                               text-sm font-semibold
                                transition
 
                         {{ request()->routeIs('transactions.*')
-                            ? 'bg-[#A48D78] text-white'
-                            : 'text-[#5C4C40] hover:bg-[#E6DAC8]' }}"
+                            ? 'border border-[var(--desert-rock)] bg-[var(--desert-rock)] text-[var(--feather-white)] shadow-lg shadow-[#a48d78]/25'
+                            : 'border border-transparent text-[var(--ink)] hover:border-[var(--desert-rock)]/20 hover:bg-[var(--feather-white)]/65 hover:text-[var(--desert-rock)]' }}"
                     >
 
-                        <span>▤</span>
+                        {!! $sidebarIcon('transactions') !!}
 
                         <span>
                             Transactions
@@ -315,7 +287,7 @@
                             class="text-[10px]
                                    uppercase
                                    tracking-[0.2em]
-                                   text-[#A48D78]"
+                                   text-[var(--muted)]"
                         >
                             Loyalty
                         </p>
@@ -333,7 +305,7 @@
                             class="text-[10px]
                                    uppercase
                                    tracking-[0.2em]
-                                   text-[#A48D78]"
+                                   text-[var(--muted)]"
                         >
                             Staff
                         </p>
@@ -348,15 +320,15 @@
                     class="flex items-center gap-3
                            rounded-lg
                            px-4 py-3
-                           text-sm font-medium
+                           text-sm font-semibold
                            transition
 
                     {{ request()->routeIs('scanner.*')
-                        ? 'bg-[#A48D78] text-white'
-                        : 'text-[#5C4C40] hover:bg-[#E6DAC8]' }}"
+                        ? 'border border-[var(--desert-rock)] bg-[var(--desert-rock)] text-[var(--feather-white)] shadow-lg shadow-[#a48d78]/25'
+                        : 'border border-transparent text-[var(--ink)] hover:border-[var(--desert-rock)]/20 hover:bg-[var(--feather-white)]/65 hover:text-[var(--desert-rock)]' }}"
                 >
 
-                    <span>⌗</span>
+                    {!! $sidebarIcon('scanner') !!}
 
                     <span>
                         QR Scanner
@@ -377,7 +349,7 @@
                             class="text-[10px]
                                    uppercase
                                    tracking-[0.2em]
-                                   text-[#A48D78]"
+                                   text-[var(--muted)]"
                         >
                             Administration
                         </p>
@@ -389,14 +361,14 @@
     href="{{ route('users.index') }}"
     class="flex items-center gap-3
            rounded-lg px-4 py-3
-           text-sm font-medium transition
+           text-sm font-semibold transition
 
     {{ request()->routeIs('users.*')
-        ? 'bg-[#A48D78] text-white'
-        : 'text-[#5C4C40] hover:bg-[#E6DAC8]' }}"
+        ? 'border border-[var(--desert-rock)] bg-[var(--desert-rock)] text-[var(--feather-white)] shadow-lg shadow-[#a48d78]/25'
+        : 'border border-transparent text-[var(--ink)] hover:border-[var(--desert-rock)]/20 hover:bg-[var(--feather-white)]/65 hover:text-[var(--desert-rock)]' }}"
 >
 
-    <span>♙</span>
+    {!! $sidebarIcon('users') !!}
 
     <span>
         User Management
@@ -415,12 +387,10 @@
             {{-- ========================================================= --}}
 
             <div
-                class="border-t
-                       border-[#E6DAC8]
-                       p-4"
+                class="p-5"
             >
 
-                <div class="px-3 mb-3">
+                <div class="rounded-2xl border border-[var(--desert-rock)]/18 bg-[var(--feather-white)]/70 p-4 text-xs text-[var(--muted)] shadow-sm">
 
 
                     {{-- USER NAME --}}
@@ -428,7 +398,7 @@
                     <p
                         class="text-sm
                                font-medium
-                               text-[#493B32]"
+                               text-[var(--ink)]"
                     >
                         {{ Auth::user()->name }}
                     </p>
@@ -443,13 +413,13 @@
                             <span
                                 class="inline-flex
                                        rounded-full
-                                       bg-[#E6DAC8]
+                                       bg-[var(--creamed-oat)]
                                        px-2 py-1
                                        text-[9px]
                                        font-semibold
                                        uppercase
                                        tracking-[0.15em]
-                                       text-[#6A5849]"
+                                       text-[var(--ink)]"
                             >
                                 Admin
                             </span>
@@ -459,13 +429,13 @@
                             <span
                                 class="inline-flex
                                        rounded-full
-                                       bg-[#E6DAC8]
+                                       bg-[var(--creamed-oat)]
                                        px-2 py-1
                                        text-[9px]
                                        font-semibold
                                        uppercase
                                        tracking-[0.15em]
-                                       text-[#6A5849]"
+                                       text-[var(--ink)]"
                             >
                                 Management
                             </span>
@@ -475,13 +445,13 @@
                             <span
                                 class="inline-flex
                                        rounded-full
-                                       bg-[#E6DAC8]
+                                       bg-[var(--creamed-oat)]
                                        px-2 py-1
                                        text-[9px]
                                        font-semibold
                                        uppercase
                                        tracking-[0.15em]
-                                       text-[#6A5849]"
+                                       text-[var(--ink)]"
                             >
                                 Staff
                             </span>
@@ -495,7 +465,7 @@
 
                     <p
                         class="text-xs
-                               text-[#9B8A7C]
+                               text-[var(--muted)]
                                truncate
                                mt-2"
                     >
@@ -520,11 +490,14 @@
                         type="submit"
                         class="w-full
                                text-left
-                               rounded-lg
-                               px-3 py-2
+                               rounded-xl
+                               border border-red-200/80
+                               bg-red-50
+                               px-4 py-3
                                text-sm
-                               text-[#5C4C40]
-                               hover:bg-[#E6DAC8]
+                               font-bold
+                               text-red-700
+                               hover:bg-red-100
                                transition"
                     >
 
@@ -553,10 +526,9 @@
         {{-- ===================================================== --}}
 
         <header
-            class="sticky top-0 z-30
+            class="glass sticky top-0 z-30
                    h-16
-                   bg-[#FAF9F6]/95
-                   border-b border-[#E6DAC8]
+                   border-b border-[var(--desert-rock)]/20
                    backdrop-blur"
         >
 

@@ -94,8 +94,15 @@ class LoyaltyScanController extends Controller
             ->loyaltyPlan
             ->discount_percentage;
 
-        $discountAmount = $eligibleSubtotal
-            * ($discountPercentage / 100);
+        $minimumSpend = $membership
+            ->loyaltyPlan
+            ->minimum_spend ?? 0;
+
+        $meetsMinimumSpend = $eligibleSubtotal >= $minimumSpend;
+
+        $discountAmount = $meetsMinimumSpend
+            ? $eligibleSubtotal * ($discountPercentage / 100)
+            : 0;
 
         $total = $subtotal - $discountAmount;
 
@@ -105,6 +112,8 @@ class LoyaltyScanController extends Controller
             'subtotal',
             'eligibleSubtotal',
             'discountPercentage',
+            'minimumSpend',
+            'meetsMinimumSpend',
             'discountAmount',
             'total'
         ));
@@ -158,8 +167,15 @@ class LoyaltyScanController extends Controller
         ->loyaltyPlan
         ->discount_percentage;
 
-    $discountAmount = $eligibleSubtotal
-        * ($discountPercentage / 100);
+    $minimumSpend = $membership
+        ->loyaltyPlan
+        ->minimum_spend ?? 0;
+
+    $meetsMinimumSpend = $eligibleSubtotal >= $minimumSpend;
+
+    $discountAmount = $meetsMinimumSpend
+        ? $eligibleSubtotal * ($discountPercentage / 100)
+        : 0;
 
     $total = $subtotal - $discountAmount;
 
@@ -169,6 +185,7 @@ class LoyaltyScanController extends Controller
         $subtotal,
         $eligibleSubtotal,
         $discountPercentage,
+        $meetsMinimumSpend,
         $discountAmount,
         $total
     ) {
@@ -189,7 +206,7 @@ class LoyaltyScanController extends Controller
 
             $itemDiscount = 0;
 
-            if ($service->discount_eligible) {
+            if ($service->discount_eligible && $meetsMinimumSpend) {
                 $itemDiscount =
                     $service->price * ($discountPercentage / 100);
             }

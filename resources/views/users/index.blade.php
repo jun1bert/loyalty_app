@@ -126,7 +126,7 @@
 
 
                             <td class="px-6 py-4 text-[#5C4C40]">
-                                {{ $user->created_at->format('M d, Y') }}
+                                {{ $user->created_at?->format('M d, Y') ?? 'Not recorded' }}
                             </td>
 
 

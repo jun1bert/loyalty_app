@@ -107,11 +107,12 @@
                     Select Customer Services
                 </h3>
 
-                <p class="text-sm text-[#8B796A] mt-2">
-                    Select all services received during this visit.
-                    Eligible services will automatically receive the member's
-                    {{ number_format($plan->discount_percentage, 0) }}% discount.
-                </p>
+                    <p class="text-sm text-[#8B796A] mt-2">
+                        Select all services received during this visit.
+                        Eligible services will automatically receive the member's
+                        {{ number_format($plan->discount_percentage, 0) }}% discount once the minimum eligible spend of
+                        PHP {{ number_format($plan->minimum_spend ?? 0, 2) }} is reached.
+                    </p>
 
             </div>
 
@@ -163,7 +164,7 @@
                                     @if($service->discount_eligible)
 
                                         <p class="text-xs text-[#A48D78] mt-1">
-                                            Loyalty discount eligible
+                                            Counts toward minimum spend
                                         </p>
 
                                     @else

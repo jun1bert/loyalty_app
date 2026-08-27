@@ -109,6 +109,38 @@
 
                 <div>
                     <label class="block text-sm font-medium text-[#493B32] mb-2">
+                        Minimum Spend for Discount
+                    </label>
+
+                    <p class="text-xs text-[#8B796A] mb-2">
+                        Discount applies only when eligible services reach this amount. Use 0 for no minimum.
+                    </p>
+
+                    <div class="relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[#8B796A]">
+                            PHP
+                        </span>
+
+                        <input
+                            type="number"
+                            name="minimum_spend"
+                            value="{{ old('minimum_spend', $loyaltyPlan->minimum_spend ?? 0) }}"
+                            step="0.01"
+                            min="0"
+                            class="theme-input pl-14"
+                            required
+                        >
+                    </div>
+
+                    @error('minimum_spend')
+                        <p class="text-red-600 text-xs mt-2">
+                            {{ $message }}
+                        </p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-[#493B32] mb-2">
                         Validity
                     </label>
 
@@ -188,6 +220,13 @@
                             <p class="text-[#8B796A]">Discount</p>
                             <p class="font-medium text-[#493B32]">
                                 {{ number_format($loyaltyPlan->discount_percentage, 2) }}%
+                            </p>
+                        </div>
+
+                        <div>
+                            <p class="text-[#8B796A]">Minimum Spend</p>
+                            <p class="font-medium text-[#493B32]">
+                                PHP {{ number_format($loyaltyPlan->minimum_spend ?? 0, 2) }}
                             </p>
                         </div>
 

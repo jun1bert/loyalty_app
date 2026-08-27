@@ -61,6 +61,10 @@
                         </th>
 
                         <th class="px-6 py-4 text-left font-semibold">
+                            Minimum Spend
+                        </th>
+
+                        <th class="px-6 py-4 text-left font-semibold">
                             Validity
                         </th>
 
@@ -105,6 +109,13 @@
                                     {{ number_format($plan->discount_percentage, 0) }}%
 
                                 </span>
+
+                            </td>
+
+
+                            <td class="px-6 py-4 text-[#5C4C40]">
+
+                                PHP {{ number_format($plan->minimum_spend ?? 0, 2) }}
 
                             </td>
 
@@ -178,7 +189,7 @@
 
                         <tr>
 
-                            <td colspan="6"
+                            <td colspan="7"
                                 class="px-6 py-12 text-center text-[#8B796A]">
 
                                 No loyalty plans have been created yet.

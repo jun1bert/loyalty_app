@@ -5,10 +5,23 @@
 @tailwind utilities;
 
 @layer base {
+    :root {
+        --desert-rock: #A48D78;
+        --soft-sandstone: #CBB9A4;
+        --creamed-oat: #E6DAC8;
+        --porcelain-mist: #F4F1EA;
+        --feather-white: #FAF9F6;
+        --ink: #4d4037;
+        --muted: #817267;
+    }
+
     body {
         font-family: 'Montserrat', sans-serif;
-        background-color: #F4F1EA;
-        color: #3f352e;
+        background:
+            linear-gradient(135deg, rgba(230, 218, 200, .98), rgba(203, 185, 164, .94)),
+            radial-gradient(circle at 12% 8%, rgba(121, 94, 73, .18), transparent 30%),
+            radial-gradient(circle at 88% 18%, rgba(164, 141, 120, .24), transparent 34%);
+        color: var(--ink);
     }
 
     h1,
@@ -18,78 +31,114 @@
     h5,
     h6 {
         font-family: 'Playfair Display', serif;
-        color: #3f352e;
+        color: var(--ink);
     }
 }
 
 @layer components {
-
-    /* Main brown button */
-    .btn-primary {
-        @apply px-5 py-2.5 rounded-lg font-medium transition duration-200;
-        background-color: #A48D78;
-        color: #FAF9F6;
+    .glass {
+        background: rgba(250, 249, 246, .96);
+        backdrop-filter: blur(18px);
+        border-color: rgba(121, 94, 73, .22);
+        box-shadow: 0 18px 48px rgba(77, 64, 55, .14);
     }
 
-    .btn-primary:hover {
+    .sidebar {
+        background:
+            linear-gradient(180deg, rgba(244, 241, 234, .99), rgba(187, 164, 139, .96)),
+            radial-gradient(circle at 30% 0%, rgba(164, 141, 120, .24), transparent 34%);
+    }
+
+    /* Main brown button */
+    .btn-primary,
+    .theme-button {
+        @apply rounded-xl px-5 py-2.5 font-semibold transition duration-200;
+        background-color: var(--desert-rock);
+        color: var(--feather-white);
+    }
+
+    .btn-primary:hover,
+    .theme-button:hover {
         background-color: #8f7865;
     }
 
     /* Light secondary button */
-    .btn-secondary {
-        @apply px-5 py-2.5 rounded-lg font-medium border transition duration-200;
-        background-color: #FAF9F6;
-        border-color: #CBB9A4;
-        color: #5c4c40;
+    .btn-secondary,
+    .muted-button {
+        @apply rounded-xl border px-5 py-2.5 font-semibold transition duration-200;
+        background-color: rgba(250, 249, 246, .86);
+        border-color: rgba(164, 141, 120, .28);
+        color: var(--ink);
     }
 
-    .btn-secondary:hover {
-        background-color: #E6DAC8;
+    .btn-secondary:hover,
+    .muted-button:hover {
+        background-color: rgba(230, 218, 200, .48);
     }
 
     /* Cards */
-    .theme-card {
-        @apply rounded-xl border shadow-sm;
-        background-color: #FAF9F6;
-        border-color: #E6DAC8;
+    .theme-card,
+    .theme-surface {
+        @apply rounded-2xl border;
+        background: rgba(252, 251, 248, .97);
+        border-color: rgba(121, 94, 73, .32);
+        box-shadow: 0 20px 52px rgba(77, 64, 55, .14), 0 2px 8px rgba(77, 64, 55, .06);
+    }
+
+    .theme-panel {
+        @apply rounded-2xl border;
+        background:
+            linear-gradient(135deg, rgba(252, 251, 248, .98), rgba(221, 207, 188, .88)),
+            radial-gradient(circle at 95% 0%, rgba(164, 141, 120, .13), transparent 30%);
+        border-color: rgba(121, 94, 73, .34);
+        box-shadow: 0 20px 52px rgba(77, 64, 55, .14);
     }
 
     /* Inputs */
-    .theme-input {
-        @apply w-full rounded-lg border px-3 py-2 outline-none transition;
-        background-color: #FAF9F6;
-        border-color: #CBB9A4;
-        color: #3f352e;
+    .theme-input,
+    .theme-field {
+        @apply w-full rounded-xl border px-3 py-2.5 text-sm outline-none transition;
+        background: rgba(255, 255, 255, .96);
+        border-color: rgba(121, 94, 73, .38);
+        color: var(--ink);
     }
 
-    .theme-input:focus {
-        border-color: #A48D78;
-        --tw-ring-color: #A48D78;
+    .theme-input:focus,
+    .theme-field:focus {
+        border-color: var(--desert-rock);
+        box-shadow: 0 0 0 4px rgba(164, 141, 120, .16);
+        background: #fff;
     }
 
     /* Table headings */
     .theme-table-header {
-        background-color: #E6DAC8;
-        color: #5c4c40;
+        background-color: rgba(190, 166, 139, .46);
+        color: var(--muted);
+        font-size: .75rem;
+        letter-spacing: .08em;
+        text-transform: uppercase;
     }
 
     /* Status badges */
     .badge-active {
-        @apply inline-flex rounded-full px-3 py-1 text-xs font-semibold;
-        background-color: #E6DAC8;
-        color: #675646;
+        @apply inline-flex rounded-full px-3 py-1 text-xs font-semibold ring-1;
+        background-color: #ecfdf5;
+        color: #047857;
+        --tw-ring-color: #a7f3d0;
     }
 
     .badge-inactive {
-        @apply inline-flex rounded-full px-3 py-1 text-xs font-semibold;
-        background-color: #eee8e2;
-        color: #7a6d63;
+        @apply inline-flex rounded-full px-3 py-1 text-xs font-semibold ring-1;
+        background-color: #f5f5f4;
+        color: #57534e;
+        --tw-ring-color: #e7e5e4;
     }
 
     /* Page title */
     .page-title {
         font-family: 'Playfair Display', serif;
-        @apply text-3xl font-medium;
-        color: #493b32;
+        @apply text-3xl font-semibold;
+        color: var(--ink);
+        letter-spacing: .04em;
     }
 }
